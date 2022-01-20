@@ -1,0 +1,29 @@
+version: '3.5'
+
+x-environment: &common-environment
+  POSTGRES_DB: postgres
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+
+services:
+  appserver:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+    environment:
+      <<: *common-environment
+      PORT: 8000
+      HOST: 0.0.0.0
+      DJANGO_DEBUG: "True"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    command: /start.sh
+
+  db:
+    image: postgres
+    environment:
+      <<: *common-environment
